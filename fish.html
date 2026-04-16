@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fish Page | Texas Fishing Notes</title>
   <link rel="stylesheet" href="styles/scratch.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 </head>
 <body id="top">
   <div class="page-shell">
@@ -17,7 +16,7 @@
       </div>
       <div class="hero-links">
         <a href="#rituals">Jump to routines</a>
-        <a href="#data-story">Jump to temperature</a>
+        <a href="#data-story">Jump to Texas temperatures</a>
         <a href="index.html">Back to home</a>
         <a href="app.html">Open the study timer</a>
       </div>
@@ -76,14 +75,14 @@
 
       <div class="feature-panel" id="data-story">
         <div class="text-column">
-          <h2>Austin Temperature Overview</h2>
-          <p>This graph focuses on monthly temperature patterns in Austin, Texas.</p>
+          <h2>Texas Temperature Trends</h2>
+          <p>This interactive graph focuses on temperature trends across Texas.</p>
         </div>
         <div class="media-column">
           <div class="tableau-frame">
-            <canvas id="austinTempChart" aria-label="Austin Texas monthly temperatures chart"></canvas>
+            <iframe src="https://scipprisa.shinyapps.io/SCIPP_temp_dash/" title="Texas temperature trends dashboard" loading="lazy"></iframe>
           </div>
-          <p class="chart-note">Monthly average temperatures for Austin based on NOAA climate normals.</p>
+          <p class="chart-note">Interactive Texas temperature trends dashboard from SCIPP.</p>
         </div>
       </div>
 
@@ -101,72 +100,5 @@
       </div>
     </main>
   </div>
-  <script>
-    const chartElement = document.getElementById("austinTempChart");
-
-    new Chart(chartElement, {
-      type: "line",
-      data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [
-          {
-            label: "Average High (F)",
-            data: [61, 65, 71, 79, 85, 91, 94, 95, 89, 80, 69, 62],
-            borderColor: "#ffd166",
-            backgroundColor: "rgba(255, 209, 102, 0.2)",
-            tension: 0.35,
-            borderWidth: 3,
-            fill: false
-          },
-          {
-            label: "Average Low (F)",
-            data: [43, 46, 52, 59, 67, 73, 76, 77, 71, 62, 52, 44],
-            borderColor: "#9ad7ff",
-            backgroundColor: "rgba(154, 215, 255, 0.22)",
-            tension: 0.35,
-            borderWidth: 3,
-            fill: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            labels: {
-              color: "#f3fbff",
-              boxWidth: 18,
-              padding: 18
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: (context) => `${context.dataset.label}: ${context.raw} deg F`
-            }
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: "#f3fbff"
-            },
-            grid: {
-              color: "rgba(255, 255, 255, 0.08)"
-            }
-          },
-          y: {
-            ticks: {
-              color: "#f3fbff",
-              callback: (value) => `${value} deg`
-            },
-            grid: {
-              color: "rgba(255, 255, 255, 0.08)"
-            }
-          }
-        }
-      }
-    });
-  </script>
 </body>
 </html>
