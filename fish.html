@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fish Page | Texas Fishing Notes</title>
+  <link rel="stylesheet" href="styles/scratch.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body id="top">
+  <div class="page-shell">
+    <header class="hero-panel">
+      <div class="hero-copy">
+        <p class="kicker">Fish Page</p>
+        <h1>Texas Fishing Notes</h1>
+        <p>This page is centered on one of my favorite hobbies: fishing in Texas. It reflects my connection to home and to the outdoors.</p>
+      </div>
+      <div class="hero-links">
+        <a href="#rituals">Jump to routines</a>
+        <a href="#data-story">Jump to temperature</a>
+        <a href="index.html">Back to home</a>
+        <a href="app.html">Open the study timer</a>
+      </div>
+    </header>
+
+    <main>
+      <div class="three-up">
+        <div class="content-card">
+          <h2>Why I enjoy it</h2>
+          <p>Fishing gives me a chance to slow down, spend time outdoors, and enjoy the Texas places that still feel familiar to me.</p>
+        </div>
+        <div class="content-card">
+          <h2>Texas fish</h2>
+          <p>Largemouth bass, Guadalupe bass, catfish, crappie, and alligator gar are some of the fish that make Texas freshwater fishing memorable.</p>
+        </div>
+        <div class="content-card">
+          <h2>Connection to home</h2>
+          <p>I grew up in College Station, Texas, so I wanted this page to keep a clear connection to home.</p>
+        </div>
+      </div>
+
+      <div class="feature-panel" id="rituals">
+        <div class="text-column">
+          <h2>My ideal fishing routine</h2>
+          <ol>
+            <li>Choose the kind of spot I want for the day.
+              <ul>
+                <li>Pick a lake, pond, or river access point.</li>
+                <li>Think about nearby places such as Lake Somerville or water near the Brazos River.</li>
+                <li>Check the weather and water conditions before leaving.</li>
+              </ul>
+            </li>
+            <li>Bring a simple setup with tackle, water, and patience.</li>
+            <li>Spend time watching the water instead of rushing every cast.</li>
+            <li>Head home with one memory, one lesson, or one good fish story.</li>
+          </ol>
+          <p class="anchor-link"><a href="#top">Return to the top of the page</a></p>
+        </div>
+        <div class="media-column">
+          <img src="assets/night-sky.svg" alt="Illustrated Texas fishing scene with a lake and fish" class="sky-image">
+        </div>
+      </div>
+
+      <div class="feature-panel reverse">
+        <div class="media-column">
+          <div class="video-frame">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/9iFcDgXkjzY" title="Texas fishing video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+        </div>
+        <div class="text-column">
+          <h2>Featured Video</h2>
+          <p>This short fishing video adds motion and energy to the page while matching the Texas fishing theme.</p>
+          <p class="note-box">The video is included as part of the overall fish page experience.</p>
+        </div>
+      </div>
+
+      <div class="feature-panel" id="data-story">
+        <div class="text-column">
+          <h2>Austin Temperature Overview</h2>
+          <p>This graph focuses on monthly temperature patterns in Austin, Texas.</p>
+        </div>
+        <div class="media-column">
+          <div class="tableau-frame">
+            <canvas id="austinTempChart" aria-label="Austin Texas monthly temperatures chart"></canvas>
+          </div>
+          <p class="chart-note">Monthly average temperatures for Austin based on NOAA climate normals.</p>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <div class="content-card">
+          <h2>Where to go next</h2>
+          <p>Use the links below to return to the main pages or open the study timer.</p>
+          <div class="inline-links">
+            <a href="index.html">Professional home</a>
+            <a href="resume.html">HTML resume</a>
+            <a href="portfolio.html">Portfolio page</a>
+            <a href="app.html">Study timer</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script>
+    const chartElement = document.getElementById("austinTempChart");
+
+    new Chart(chartElement, {
+      type: "line",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        datasets: [
+          {
+            label: "Average High (F)",
+            data: [61, 65, 71, 79, 85, 91, 94, 95, 89, 80, 69, 62],
+            borderColor: "#ffd166",
+            backgroundColor: "rgba(255, 209, 102, 0.2)",
+            tension: 0.35,
+            borderWidth: 3,
+            fill: false
+          },
+          {
+            label: "Average Low (F)",
+            data: [43, 46, 52, 59, 67, 73, 76, 77, 71, 62, 52, 44],
+            borderColor: "#9ad7ff",
+            backgroundColor: "rgba(154, 215, 255, 0.22)",
+            tension: 0.35,
+            borderWidth: 3,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: "#f3fbff",
+              boxWidth: 18,
+              padding: 18
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.dataset.label}: ${context.raw} deg F`
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: "#f3fbff"
+            },
+            grid: {
+              color: "rgba(255, 255, 255, 0.08)"
+            }
+          },
+          y: {
+            ticks: {
+              color: "#f3fbff",
+              callback: (value) => `${value} deg`
+            },
+            grid: {
+              color: "rgba(255, 255, 255, 0.08)"
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

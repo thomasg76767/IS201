@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Focused Study Timer</title>
+  <style>
+    :root {
+      --ink: #183047;
+      --accent: #d36a4a;
+      --accent-dark: #b45437;
+      --panel: rgba(255, 255, 255, 0.84);
+      --line: rgba(24, 48, 71, 0.12);
+      --shadow: 0 24px 55px rgba(24, 48, 71, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(211, 106, 74, 0.16), transparent 32%),
+        radial-gradient(circle at bottom right, rgba(126, 180, 160, 0.2), transparent 28%),
+        linear-gradient(180deg, #fffdfa 0%, #f4f0ea 100%);
+    }
+
+    a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .app-shell {
+      width: min(860px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    .topbar,
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .topbar nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+
+    .panel {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.78rem;
+      color: #66768d;
+    }
+
+    h1,
+    h2 {
+      margin-top: 0;
+      font-family: "Palatino Linotype", Georgia, serif;
+    }
+
+    .timer-display {
+      margin: 1.4rem 0 1rem;
+      font-size: clamp(3.2rem, 10vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--accent-dark);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status {
+      margin: 0 0 1.4rem;
+      color: #5c6d82;
+      font-size: 1.05rem;
+    }
+
+    .preset-row,
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .preset-row {
+      margin: 1.5rem 0 1.2rem;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .preset,
+    .secondary-btn,
+    .primary-btn {
+      border-radius: 999px;
+      padding: 0.8rem 1.1rem;
+      border: 1px solid var(--line);
+      cursor: pointer;
+    }
+
+    .preset,
+    .secondary-btn {
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .preset.active {
+      border-color: var(--accent);
+      color: var(--accent-dark);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    .primary-btn {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      font-weight: 700;
+    }
+
+    .custom-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .custom-row input {
+      width: 88px;
+      padding: 0.7rem 0.8rem;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      text-align: center;
+    }
+
+    .progress-track {
+      width: min(100%, 460px);
+      height: 12px;
+      margin: 1.5rem auto 0;
+      border-radius: 999px;
+      background: rgba(24, 48, 71, 0.09);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), #f1b56e);
+      transition: width 0.35s ease;
+    }
+
+    .footer-note {
+      margin-top: 1.7rem;
+      color: #66768d;
+    }
+
+    .session-count {
+      margin-top: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    @media (max-width: 720px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Single-page mini web app</p>
+        <h2>Focused Study Timer</h2>
+      </div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="resume.html">Resume</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="fish.html">Fish Page</a>
+      </nav>
+    </header>
+
+    <main class="panel">
+      <p class="eyebrow">Simple and practical</p>
+      <h1>Set a time, start studying, and stay with one task.</h1>
+      <p class="status" id="statusText">Choose a timer length, then press start.</p>
+
+      <div class="preset-row">
+        <button class="preset active" type="button" data-minutes="25">25 min</button>
+        <button class="preset" type="button" data-minutes="45">45 min</button>
+        <button class="preset" type="button" data-minutes="60">60 min</button>
+      </div>
+
+      <div class="custom-row">
+        <label for="customMinutes">Custom minutes</label>
+        <input id="customMinutes" type="number" min="1" max="180" value="25">
+        <button class="secondary-btn" type="button" id="setCustom">Set Timer</button>
+      </div>
+
+      <div class="timer-display" id="timerDisplay">25:00</div>
+
+      <div class="button-row">
+        <button class="primary-btn" type="button" id="startPause">Start</button>
+        <button class="secondary-btn" type="button" id="resetTimer">Reset</button>
+      </div>
+
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <p class="session-count" id="sessionCount">Completed study sessions: 0</p>
+      <p class="footer-note">Use this as a focused timer for homework, reading, accounting practice, or exam prep.</p>
+    </main>
+  </div>
+
+  <script>
+    const display = document.getElementById("timerDisplay");
+    const statusText = document.getElementById("statusText");
+    const progressBar = document.getElementById("progressBar");
+    const startPauseButton = document.getElementById("startPause");
+    const resetButton = document.getElementById("resetTimer");
+    const setCustomButton = document.getElementById("setCustom");
+    const customMinutesInput = document.getElementById("customMinutes");
+    const presetButtons = Array.from(document.querySelectorAll(".preset"));
+    const sessionCountText = document.getElementById("sessionCount");
+
+    const storageKey = "study-timer-sessions";
+    let selectedMinutes = 25;
+    let totalSeconds = selectedMinutes * 60;
+    let remainingSeconds = totalSeconds;
+    let timerId = null;
+    let sessionsCompleted = Number(localStorage.getItem(storageKey) || "0");
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60).toString().padStart(2, "0");
+      const secs = (seconds % 60).toString().padStart(2, "0");
+      return `${mins}:${secs}`;
+    }
+
+    function updateDisplay() {
+      display.textContent = formatTime(remainingSeconds);
+      const progress = totalSeconds === 0 ? 0 : ((totalSeconds - remainingSeconds) / totalSeconds) * 100;
+      progressBar.style.width = `${Math.min(Math.max(progress, 0), 100)}%`;
+      sessionCountText.textContent = `Completed study sessions: ${sessionsCompleted}`;
+    }
+
+    function selectMinutes(minutes, updateInput = true) {
+      selectedMinutes = minutes;
+      totalSeconds = minutes * 60;
+      remainingSeconds = totalSeconds;
+      clearInterval(timerId);
+      timerId = null;
+      startPauseButton.textContent = "Start";
+      statusText.textContent = "Choose a timer length, then press start.";
+      if (updateInput) {
+        customMinutesInput.value = minutes;
+      }
+      presetButtons.forEach((button) => {
+        button.classList.toggle("active", Number(button.dataset.minutes) === minutes);
+      });
+      updateDisplay();
+    }
+
+    presetButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        selectMinutes(Number(button.dataset.minutes));
+      });
+    });
+
+    setCustomButton.addEventListener("click", () => {
+      const customMinutes = Number(customMinutesInput.value);
+      if (!Number.isFinite(customMinutes) || customMinutes < 1 || customMinutes > 180) {
+        statusText.textContent = "Enter a custom time between 1 and 180 minutes.";
+        return;
+      }
+
+      presetButtons.forEach((button) => button.classList.remove("active"));
+      selectMinutes(customMinutes, false);
+      statusText.textContent = `Custom timer set for ${customMinutes} minutes.`;
+    });
+
+    startPauseButton.addEventListener("click", () => {
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+        startPauseButton.textContent = "Start";
+        statusText.textContent = "Timer paused. Press start when you are ready to continue.";
+        return;
+      }
+
+      startPauseButton.textContent = "Pause";
+      statusText.textContent = "Study session in progress.";
+
+      timerId = setInterval(() => {
+        if (remainingSeconds <= 0) {
+          clearInterval(timerId);
+          timerId = null;
+          startPauseButton.textContent = "Start";
+          statusText.textContent = "Study session complete. Take a short break, then start again.";
+          sessionsCompleted += 1;
+          localStorage.setItem(storageKey, String(sessionsCompleted));
+          updateDisplay();
+          return;
+        }
+
+        remainingSeconds -= 1;
+        updateDisplay();
+      }, 1000);
+    });
+
+    resetButton.addEventListener("click", () => {
+      selectMinutes(selectedMinutes, false);
+      statusText.textContent = "Timer reset. Press start when you are ready.";
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>
